@@ -1,4 +1,7 @@
 
+from pathlib import Path
+DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "Books.csv"
+
 import matplotlib.pylab as plt
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -15,14 +18,14 @@ Bar_Colors = ['salmon', 'skyblue', 'gold', 'orange', 'violet', 'red', 'lightgrey
 class PublicationTrend(Analysis):  # Count of books published per year
     def PerformAnalysis(self):
         # Read book dataset from CSV
-        df = pd.read_csv('Books.csv')
+        df = pd.read_csv(DATA_FILE)
 
         # Group by publication year and count books
         publication_counts = df.groupby('publication date').size().reset_index(name='Count of Books')
         print(publication_counts)
 
         # Prepare bar chart: publication year on X-axis, count on Y-axis
-        colors = BAR_COLORS[:len(publication_counts)]
+        colors = Bar_Colors[:len(publication_counts)]
         plt.bar(publication_counts['publication date'], publication_counts['Count of Books'], color=colors)
         plt.title('Number of Books Published Per Year')
         plt.xlabel('Year of Publishment')
@@ -37,7 +40,7 @@ Top_Max_Authors = 5  # Number of top authors to analyze
 
 class TopFive(Analysis): # Top 5 Most Prolific Authors (Authors with the highest number of books)
     def  PerformAnalysis(self): 
-        df1 = pd.read_csv('Books.csv')
+        df1 = pd.read_csv(DATA_FILE)
         df2 = df1.groupby (['author']).size().reset_index(name='Top Five Authors') 
         print(df2)
         df3 = df2.nlargest(Top_Max_Authors,'Top Five Authors') # restrict to top 5 authors
@@ -52,7 +55,7 @@ class TopFive(Analysis): # Top 5 Most Prolific Authors (Authors with the highest
 #3
 class LanguageDistribution(Analysis): #Language Distribution of Books.
     def  PerformAnalysis(self):
-        df1 = pd.read_csv('Books.csv')
+        df1 = pd.read_csv(DATA_FILE)
         df2 = df1.groupby (['language']).size().reset_index(name='Language Distribution')  
         print(df2)
         
@@ -66,7 +69,7 @@ class LanguageDistribution(Analysis): #Language Distribution of Books.
 #4
 class Publisher(Analysis):  # Publishers by number of books published
     def PerformAnalysis(self):
-        df1 = pd.read_csv('Books.csv')
+        df1 = pd.read_csv(DATA_FILE)
         df2 = df1.groupby(['book publisher']).size().reset_index(name='Books Published by each Publisher')
         df2 = df2.sort_values(by='Books Published by each Publisher', ascending=False).head(10)  
         print(df2)
@@ -83,7 +86,7 @@ class Publisher(Analysis):  # Publishers by number of books published
 #5        
 class  MissingISBN (Analysis): # Percentage of records without an ISBN
     def PerformAnalysis(self):
-            df1 = pd.read_csv('Books.csv')
+            df1 = pd.read_csv(DATA_FILE)
             null_count = df1['ISBN'].isnull().sum()  # count rows where ISBN is null
             print('Count of null values in ISBN column: ', null_count)
             row_count = len(df1)  # count all rows
@@ -107,7 +110,7 @@ class  MissingISBN (Analysis): # Percentage of records without an ISBN
 #6            
 class  PerYearbyLanguage (Analysis): # Number of books published per year categorized by language.
     def PerformAnalysis(self):
-            df1 = pd.read_csv('Books.csv')
+            df1 = pd.read_csv(DATA_FILE)
             # Group by two columns and get size (count of rows per group)
             df2 = df1.groupby(['publication date', 'language']).size().reset_index(name='Count Published per Year by Language')
             # Pivot for a grouped bar chart
